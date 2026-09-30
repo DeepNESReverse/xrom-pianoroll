@@ -11,7 +11,8 @@ Notes falling onto a piano keyboard, the way a Synthesia video shows a piece —
   sounding notes are named under their keys; landing blocks throw sparks;
   vibrato and slides are drawn as the curve itself.
 - Fast by construction: every frame is one canvas paint plus DOM writes only
-  for keys that changed — ~0.2 ms of main thread a frame, and **nothing at
+  for keys that changed — about half a millisecond of main thread a frame on a
+  laptop, and **nothing at
   all** while the clock is paused or the roll is scrolled out of view.
 - ~6 KB gzipped. Works in any page; React component included.
 
