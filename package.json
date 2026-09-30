@@ -1,0 +1,78 @@
+{
+  "name": "@xromdev/pianoroll",
+  "version": "0.1.0",
+  "description": "Notes falling onto a piano keyboard, Synthesia-style: canvas blocks, CSS keys, no framework needed — React component included.",
+  "license": "MIT",
+  "author": "Oleksandr Maksymov",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./pianoroll.css": "./dist/pianoroll.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && cp src/pianoroll.css dist/",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run typecheck && npm test"
+  },
+  "keywords": [
+    "piano-roll",
+    "piano",
+    "keyboard",
+    "synthesia",
+    "midi",
+    "music",
+    "visualizer",
+    "canvas",
+    "react",
+    "nes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeepNESReverse/xrom-pianoroll.git"
+  },
+  "homepage": "https://github.com/DeepNESReverse/xrom-pianoroll#readme",
+  "bugs": {
+    "url": "https://github.com/DeepNESReverse/xrom-pianoroll/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "jsdom": "^25.0.1",
+    "react": "^19.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,167 @@
+/*
+ * @xromdev/pianoroll — the keys' behaviour.
+ *
+ * Lighting a key costs no render: the view writes `data-lit` and `--flash` on
+ * the key's element and everything below happens in CSS. Arriving is instant,
+ * leaving is a fade (`--flash-release`) — that asymmetry is what reads as a key
+ * being struck rather than a light dimmed up and down.
+ */
+
+.xpr-roll {
+  position: relative;
+  overflow: hidden;
+  background: #0b0b12;
+}
+
+.xpr-canvas {
+  display: block;
+  width: 100%;
+}
+
+.xpr-keys {
+  position: relative;
+}
+
+.xpr-slip {
+  position: relative;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 18%, rgba(0, 0, 0, 0.18) 100%),
+    linear-gradient(180deg, #2b2018 0%, #1e1710 52%, #150f0a 100%);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.55);
+}
+
+.xpr-name {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 2px;
+  padding: 0 4px;
+  background: rgba(0, 0, 0, 0.55);
+  font: 600 9px/13px ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+}
+
+/* A key: its face and shade come from `keyStyle` as custom properties. */
+.xpr-key {
+  isolation: isolate;
+  background: var(--key-face);
+  box-shadow: var(--key-shade);
+  transform-origin: 50% 0%;
+  transform: perspective(var(--key-eye, 340px)) rotateX(0deg);
+  transition:
+    transform 120ms cubic-bezier(0.34, 1.36, 0.64, 1),
+    box-shadow 120ms linear,
+    background 120ms linear;
+}
+
+/* Down is a collision and up is a spring: struck in 25ms, back in 120ms. */
+.xpr-key[data-lit='1'] {
+  background: var(--key-face-down);
+  box-shadow: var(--key-shade-down);
+  transform: perspective(var(--key-eye, 340px)) rotateX(calc(-1 * var(--key-dip, 3.4deg)));
+  transition-duration: 25ms;
+  transition-timing-function: cubic-bezier(0.3, 0.7, 0.5, 1);
+}
+
+/*
+ * The voice's colour, tinting the key from the far end — where the block
+ * landed — and gone before the front, where the press is read.
+ */
+.xpr-key::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--flash, transparent);
+  opacity: 0;
+  transition: opacity var(--flash-release, 320ms) cubic-bezier(0.22, 0.61, 0.36, 1);
+  pointer-events: none;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0,
+    rgba(0, 0, 0, 0.92) 30%,
+    rgba(0, 0, 0, 0.72) 50%,
+    rgba(0, 0, 0, 0.38) 68%,
+    transparent 88%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0,
+    rgba(0, 0, 0, 0.92) 30%,
+    rgba(0, 0, 0, 0.72) 50%,
+    rgba(0, 0, 0, 0.38) 68%,
+    transparent 88%
+  );
+  mix-blend-mode: multiply;
+}
+
+.xpr-key[data-black='1']::after {
+  mix-blend-mode: screen;
+}
+
+.xpr-key[data-lit='1']::after {
+  opacity: 1;
+  transition-duration: 25ms;
+  box-shadow: 0 0 16px 2px var(--flash, transparent);
+}
+
+/* `keyFlash: false` — the keys still go down, without the colour. */
+[data-key-flash='0'] .xpr-key[data-lit='1']::after {
+  opacity: 0;
+}
+
+.xpr-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  z-index: 3;
+  text-align: center;
+  font: 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #6b7280;
+  pointer-events: none;
+  transition: color var(--flash-release, 320ms) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.xpr-key[data-lit='1'] .xpr-label {
+  color: #0a0a12;
+  transition-duration: 25ms;
+}
+
+/*
+ * A note written twice in a row: the key lifts a third of the way and is
+ * struck again. Two identical animations under two names, because re-running
+ * a CSS animation needs the name to change.
+ */
+@keyframes xpr-restrike-a {
+  0% {
+    transform: perspective(var(--key-eye, 340px)) rotateX(calc(-1 * var(--key-dip, 3.4deg)));
+  }
+  42% {
+    transform: perspective(var(--key-eye, 340px)) rotateX(calc(-0.34 * var(--key-dip, 3.4deg)));
+  }
+  100% {
+    transform: perspective(var(--key-eye, 340px)) rotateX(calc(-1 * var(--key-dip, 3.4deg)));
+  }
+}
+
+@keyframes xpr-restrike-b {
+  0% {
+    transform: perspective(var(--key-eye, 340px)) rotateX(calc(-1 * var(--key-dip, 3.4deg)));
+  }
+  42% {
+    transform: perspective(var(--key-eye, 340px)) rotateX(calc(-0.34 * var(--key-dip, 3.4deg)));
+  }
+  100% {
+    transform: perspective(var(--key-eye, 340px)) rotateX(calc(-1 * var(--key-dip, 3.4deg)));
+  }
+}
+
+.xpr-key[data-restrike='a'] {
+  animation: xpr-restrike-a 105ms cubic-bezier(0.33, 0, 0.3, 1);
+}
+
+.xpr-key[data-restrike='b'] {
+  animation: xpr-restrike-b 105ms cubic-bezier(0.33, 0, 0.3, 1);
+}
