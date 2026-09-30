@@ -41,9 +41,18 @@
   white-space: nowrap;
 }
 
-/* A key: its face and shade come from `keyStyle` as custom properties. */
+/*
+ * A key: its face and shade come from `keyStyle` as custom properties.
+ *
+ * `will-change: transform` keeps every key on its own compositor layer for
+ * good. Without it Chrome lifts a key onto a layer only while its press
+ * animates and drops it after — and a key that did that while scrolled out of
+ * view could come back as a hole in the keyboard: its layer never repainted,
+ * though nothing about the key itself was wrong.
+ */
 .xpr-key {
   isolation: isolate;
+  will-change: transform;
   background: var(--key-face);
   box-shadow: var(--key-shade);
   transform-origin: 50% 0%;
