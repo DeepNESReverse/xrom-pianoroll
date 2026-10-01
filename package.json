@@ -76,6 +76,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@xromdev/roll": "file:../roll"
+    "@xromdev/roll": "^0.1.0"
   }
 }
