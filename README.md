@@ -14,7 +14,10 @@ Notes falling onto a piano keyboard, the way a Synthesia video shows a piece —
   for keys that changed — about half a millisecond of main thread a frame on a
   laptop, and **nothing at
   all** while the clock is paused or the roll is scrolled out of view.
-- ~6 KB gzipped. Works in any page; React component included.
+- Built on [@xromdev/roll](https://github.com/DeepNESReverse/xrom-roll), the
+  core it shares with [@xromdev/drumroll](https://github.com/DeepNESReverse/xrom-drumroll):
+  the drums fall onto a kit under the keyboard, on the same clock.
+- ~7 KB minified and gzipped with the core. Works in any page; React component included.
 
 **Try it: [xrom.dev/utils/pianoroll](https://xrom.dev/utils/pianoroll)** — drop an NSF and watch its music.
 
@@ -86,8 +89,9 @@ interface RollNote {
 | `onSoundingChange` | — | Called when the set of sounding notes changes, not every frame. |
 
 `resolveTracks(notes)` gives each track's colour and label for a legend.
-The pieces are exported too: `keyboardLayout` (key geometry), `paintRoll`
-(the falling area on your own canvas), `frameOf`, `burst` / `stepSparks`.
+The pieces are exported too: `keyboardLayout` (key geometry), and from the
+core `paintRoll` (the falling area on your own canvas), `frameOf`,
+`burst` / `stepSparks`.
 
 ## Development
 
