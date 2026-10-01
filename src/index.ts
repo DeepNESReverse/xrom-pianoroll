@@ -5,9 +5,9 @@
  * `@xromdev/pianoroll/react` wraps it as a component. Import
  * `@xromdev/pianoroll/pianoroll.css` once for the keys.
  *
- * The pieces are exported too: the keyboard's geometry (`keyboardLayout`, keys
- * in a real piano's proportions), `paintRoll` for the falling area on a canvas
- * of your own, and the sparks.
+ * The falling area and the frame loop are `@xromdev/roll`'s, re-exported here;
+ * this package is the keyboard: its geometry (`keyboardLayout`, keys in a real
+ * piano's proportions), the keys' faces, and the view.
  */
 
 export {
@@ -35,15 +35,21 @@ export {
   type KeyboardLayout,
 } from './keyboard.js';
 export { SHADOW_REFERENCE_WIDTH, keyStyle } from './keys.js';
+// The core, for anyone who drew with these before they had a package of their own.
 export {
+  RollView,
   frameOf,
   paintRoll,
   visibleNotes,
+  MAX_SPARKS,
+  burst,
+  stepSparks,
   type Guide,
   type LaneColumn,
   type LitLane,
   type PaintInput,
   type PaintedNote,
   type PitchCurve,
-} from './paint.js';
-export { MAX_SPARKS, burst, stepSparks, type Spark } from './sparks.js';
+  type RollSurface,
+  type Spark,
+} from '@xromdev/roll';

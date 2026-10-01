@@ -1,6 +1,6 @@
 {
   "name": "@xromdev/pianoroll",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Notes falling onto a piano keyboard, Synthesia-style: canvas blocks, CSS keys, no framework needed — React component included.",
   "license": "MIT",
   "author": "Oleksandr Maksymov",
@@ -74,5 +74,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@xromdev/roll": "file:../roll"
   }
 }
