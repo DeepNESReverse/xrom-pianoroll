@@ -33,7 +33,7 @@ import {
   slipDepth,
   type KeyboardLayout,
 } from './keyboard.js';
-import { SHADOW_REFERENCE_WIDTH, keyStyle } from './keys.js';
+import { SHADOW_REFERENCE_WIDTH, beyondRuns, keyStyle } from './keys.js';
 
 export interface RollNote {
   /** MIDI note number; 60 is middle C. */
@@ -172,6 +172,17 @@ class Keyboard implements RollSurface<PianoRollOptions> {
       }
       elements.push(node);
       nodes.set(key.midi, node);
+    }
+    // Keys a piano does not have, under one mark each stretch.
+    for (const run of beyondRuns(layout.keys)) {
+      const mark = doc.createElement('div');
+      mark.className = 'xpr-beyond';
+      mark.style.left = `${run.left}px`;
+      mark.style.width = `${run.right - run.left}px`;
+      mark.style.height = `${height * 0.3}px`;
+      mark.title = `${noteName(run.from)}–${noteName(run.to)}: past the 88 keys of a piano`;
+      mark.textContent = run.right - run.left >= 40 ? 'past the piano' : '!';
+      elements.push(mark);
     }
     this.keysEl.replaceChildren(...elements);
     this.nodes = nodes;

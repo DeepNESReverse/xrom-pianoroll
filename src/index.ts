@@ -29,12 +29,13 @@ export {
   keyboardLayout,
   noteName,
   noteRange,
+  onPiano,
   snapRange,
   whiteKeyCount,
   type KeyGeometry,
   type KeyboardLayout,
 } from './keyboard.js';
-export { SHADOW_REFERENCE_WIDTH, keyStyle } from './keys.js';
+export { BEYOND_FACE, SHADOW_REFERENCE_WIDTH, beyondRuns, keyStyle } from './keys.js';
 // The core, for anyone who drew with these before they had a package of their own.
 export {
   RollView,

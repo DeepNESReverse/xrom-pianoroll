@@ -6,6 +6,7 @@ import {
   MAX_WHITE_KEY_WIDTH,
   WHITE_KEY_ASPECT,
   chooseRange,
+  onPiano,
   isBlackKey,
   NAME_PLATE,
   keyWidthForDepth,
@@ -179,6 +180,16 @@ describe('chooseRange', () => {
     expect(wide.full).toBe(true);
     expect(wide.from).toBe(FULL_PIANO.from);
     expect(wide.to).toBe(FULL_PIANO.to);
+  });
+
+  it('stretches the piano to notes past its ends, a whole octave at a time', () => {
+    const high = chooseRange([{ midi: 60 }, { midi: 113 }], 1600);
+    expect(high.full).toBe(true);
+    expect(high.from).toBe(FULL_PIANO.from);
+    expect(high.to).toBe(119);
+    expect(onPiano(108)).toBe(true);
+    expect(onPiano(109)).toBe(false);
+    expect(onPiano(20)).toBe(false);
   });
 
   it('narrows to what the piece plays when it cannot', () => {

@@ -6,7 +6,7 @@
  * swap from up to down happens in CSS, so pressing a key never costs a render.
  */
 
-import type { KeyGeometry } from './keyboard.js';
+import { onPiano, type KeyGeometry } from './keyboard.js';
 
 /**
  * The two faces of a key, up and down.
@@ -35,6 +35,13 @@ export const WHITE_SIDE = (strength: number) =>
 export const WHITE_FACE = `${WHITE_SIDE(1)}, linear-gradient(180deg, #dcdce4 0%, #edeef3 18%, #fbfbfe 100%)`;
 // Pressed, the key is down in its slot and takes less of the light across it.
 export const WHITE_FACE_DOWN = `${WHITE_SIDE(0.4)}, linear-gradient(180deg, #c2c2ce 0%, #dcdce6 26%, #e2e2ea 100%)`;
+/**
+ * A white key no piano has — past C8 or below A0, where a chip still plays: the
+ * same key in amber, so a note landing there reads as off the instrument rather
+ * than as one a pianist could play.
+ */
+export const BEYOND_FACE = `${WHITE_SIDE(1)}, linear-gradient(180deg, #d8c9a0 0%, #ebdcb4 18%, #f6ecd0 100%)`;
+export const BEYOND_FACE_DOWN = `${WHITE_SIDE(0.4)}, linear-gradient(180deg, #c2b083 0%, #d8c79c 26%, #e0d0a6 100%)`;
 /**
  * A black key is a BAR, not a black rectangle, and three planes of it are in
  * view at once.
@@ -143,11 +150,24 @@ export function keyStyle(key: KeyGeometry, height: number, scale: number): Recor
     'border-top': 'none',
     'border-radius': '0 0 4px 4px',
     'z-index': key.black ? '2' : '1',
-    '--key-face': key.black ? BLACK_FACE : WHITE_FACE,
-    '--key-face-down': key.black ? BLACK_FACE_DOWN : WHITE_FACE_DOWN,
+    '--key-face': key.black ? BLACK_FACE : onPiano(key.midi) ? WHITE_FACE : BEYOND_FACE,
+    '--key-face-down': key.black ? BLACK_FACE_DOWN : onPiano(key.midi) ? WHITE_FACE_DOWN : BEYOND_FACE_DOWN,
     '--key-shade': key.black ? blackShade(scale) : whiteShade(scale),
     '--key-shade-down': key.black ? blackShadeDown(scale) : whiteShadeDown(scale),
     '--key-dip': key.black ? DIP_BLACK : DIP_WHITE,
     '--key-eye': `${Math.round(height * EYE_DISTANCE)}px`,
   };
+}
+
+/** The stretches of white keys past a piano's ends, edge to edge — where the view marks them. */
+export function beyondRuns(keys: readonly KeyGeometry[]): { from: number; to: number; left: number; right: number }[] {
+  const runs: { from: number; to: number; left: number; right: number }[] = [];
+  for (const key of keys) {
+    if (key.black || onPiano(key.midi)) continue;
+    // The next white key is one or two semitones on.
+    const run = runs.find((r) => r.to === key.midi - 1 || r.to === key.midi - 2);
+    if (run) [run.to, run.right] = [key.midi, key.x + key.width];
+    else runs.push({ from: key.midi, to: key.midi, left: key.x, right: key.x + key.width });
+  }
+  return runs;
 }

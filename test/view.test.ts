@@ -102,4 +102,16 @@ describe('PianoRollView', () => {
     expect(keys).toHaveLength(25);
     expect([...keys].filter((k) => k.dataset.black === '1')).toHaveLength(10);
   });
+
+  it('marks the keys past the piano that a note reaches', () => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const view = new PianoRollView(host, { sparks: false });
+    (view as unknown as { resize(w: number, h: number): void }).resize(1400, 400);
+    view.setNotes([{ midi: 60, start: 0, duration: 1 }, { midi: 115, start: 0, duration: 1 }]);
+    expect(view.keyboard!.to).toBe(119);
+    const marks = view.element.querySelectorAll<HTMLElement>('.xpr-beyond');
+    expect(marks.length).toBe(1);
+    expect(marks[0].title).toBe('D8–B8: past the 88 keys of a piano');
+  });
 });

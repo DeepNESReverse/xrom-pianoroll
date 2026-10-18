@@ -278,6 +278,11 @@ export function keyboardLayout(
  * afford it, and otherwise the range narrows to what the piece actually plays,
  * padded out to whole octaves.
  *
+ * A chip plays past both ends of a piano — Terminator 2's arpeggios run up to
+ * G9 — and on the 88 keys those notes fell off the edge. So the piano is
+ * stretched, a whole octave at a time, to the highest and lowest note played;
+ * the keys it gains are marked (`onPiano`, and `xpr-beyond` in the view).
+ *
  * Pure, so the decision is checkable: at 1200px it is the full piano, at 500px
  * it is not, and the boundary is a number rather than a guess.
  */
@@ -287,8 +292,14 @@ export function chooseRange(
   options: { minWhiteWidth?: number; fallback?: { from: number; to: number } } = {}
 ): { from: number; to: number; full: boolean } {
   const minWhite = options.minWhiteWidth ?? MIN_WHITE_KEY_WIDTH;
-  if (width >= FULL_PIANO_WHITE_KEYS * minWhite) {
-    return { ...FULL_PIANO, full: true };
+  const played = notes.length > 0 ? noteRange(notes) : FULL_PIANO;
+  const from = Math.min(FULL_PIANO.from, played.from);
+  const to = Math.max(FULL_PIANO.to, played.to);
+  if (width >= whiteKeyCount(from, to) * minWhite) {
+    return { from, to, full: true };
   }
   return { ...noteRange(notes, options.fallback), full: false };
 }
+
+/** Is this a key a piano has — A0 to C8? */
+export const onPiano = (midi: number) => midi >= FULL_PIANO.from && midi <= FULL_PIANO.to;
