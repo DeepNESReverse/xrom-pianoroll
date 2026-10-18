@@ -292,9 +292,16 @@ export function chooseRange(
   options: { minWhiteWidth?: number; fallback?: { from: number; to: number } } = {}
 ): { from: number; to: number; full: boolean } {
   const minWhite = options.minWhiteWidth ?? MIN_WHITE_KEY_WIDTH;
-  const played = notes.length > 0 ? noteRange(notes) : FULL_PIANO;
-  const from = Math.min(FULL_PIANO.from, played.from);
-  const to = Math.max(FULL_PIANO.to, played.to);
+  // Only past an end does it stretch: a top note of C8 is still the piano's — rounded up to its
+  // octave first, Truck Stop's pulse 2 got eleven keys it never plays.
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const note of notes) {
+    if (note.midi < lo) lo = note.midi;
+    if (note.midi > hi) hi = note.midi;
+  }
+  const from = lo < FULL_PIANO.from ? snapRange(lo, hi).from : FULL_PIANO.from;
+  const to = hi > FULL_PIANO.to ? snapRange(lo, hi).to : FULL_PIANO.to;
   if (width >= whiteKeyCount(from, to) * minWhite) {
     return { from, to, full: true };
   }

@@ -187,6 +187,8 @@ describe('chooseRange', () => {
     expect(high.full).toBe(true);
     expect(high.from).toBe(FULL_PIANO.from);
     expect(high.to).toBe(119);
+    // A top note of C8 is the piano's own: nothing to stretch.
+    expect(chooseRange([{ midi: 60 }, { midi: 108 }], 1600).to).toBe(FULL_PIANO.to);
     expect(onPiano(108)).toBe(true);
     expect(onPiano(109)).toBe(false);
     expect(onPiano(20)).toBe(false);
