@@ -281,7 +281,8 @@ export function keyboardLayout(
  * A chip plays past both ends of a piano — Terminator 2's arpeggios run up to
  * G9 — and on the 88 keys those notes fell off the edge. So the piano is
  * stretched, a whole octave at a time, to the highest and lowest note played;
- * the keys it gains are marked (`onPiano`, and `xpr-beyond` in the view).
+ * the keys it gains are marked: amber keys (`onPiano`) and the falling area over them tinted
+ * behind the blocks (a `regions` stretch of `@xromdev/roll`).
  *
  * Pure, so the decision is checkable: at 1200px it is the full piano, at 500px
  * it is not, and the boundary is a number rather than a guess.

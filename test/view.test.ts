@@ -103,15 +103,18 @@ describe('PianoRollView', () => {
     expect([...keys].filter((k) => k.dataset.black === '1')).toHaveLength(10);
   });
 
-  it('marks the keys past the piano that a note reaches', () => {
+  it('marks the lanes past the piano behind the blocks, its keys in amber', () => {
     const host = document.createElement('div');
     document.body.append(host);
     const view = new PianoRollView(host, { sparks: false });
-    (view as unknown as { resize(w: number, h: number): void }).resize(1400, 400);
-    view.setNotes([{ midi: 60, start: 0, duration: 1 }, { midi: 115, start: 0, duration: 1 }]);
+    const surface = (view as unknown as { surface: { layout: (...a: unknown[]) => { regions?: unknown[] } } }).surface;
+    const notes = [{ lane: 60, start: 0, duration: 1 }, { lane: 115, start: 0, duration: 1 }];
+    const layout = surface.layout(1400, 400, notes, {});
     expect(view.keyboard!.to).toBe(119);
-    const marks = view.element.querySelectorAll<HTMLElement>('.xpr-beyond');
-    expect(marks.length).toBe(1);
-    expect(marks[0].title).toBe('D8–B8: past the 88 keys of a piano');
+    expect(layout.regions).toEqual([
+      expect.objectContaining({ rgb: '245, 158, 11', edge: 'left', label: 'past the piano' }),
+    ]);
+    // Painted on the canvas, not laid over it: no element covers the notes.
+    expect(view.element.querySelector('.xpr-beyond')).toBeNull();
   });
 });

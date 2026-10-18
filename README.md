@@ -78,7 +78,7 @@ interface RollNote {
 | option | default | |
 |---|---|---|
 | `lookAhead` | 2.5 | Seconds of music above the keyboard — the fall speed. |
-| `range` | chosen | `{ from, to }` in MIDI; left out, all 88 keys if they fit — stretched by whole octaves to notes past A0 or C8, those keys drawn in amber under a "past the piano" mark — else the notes' octaves. |
+| `range` | chosen | `{ from, to }` in MIDI; left out, all 88 keys if they fit — stretched by whole octaves to notes past A0 or C8, those keys drawn in amber, the falling area over them tinted behind the notes with a dashed line where the 88 keys end and "past the piano" at its foot — else the notes' octaves. |
 | `tracks` | NES channels | `{ [track]: { color, label?, hatch? } }` over the defaults. |
 | `keyboardHeight` | proportional | Fix the strip for keys + name slip, to line two rolls up. |
 | `releaseMs` | 320 | How long a key's colour takes to fade. |

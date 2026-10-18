@@ -23,6 +23,7 @@ import {
   type TrackStyle,
 } from '@xromdev/roll';
 import {
+  FULL_PIANO,
   MAX_WHITE_KEY_WIDTH,
   NAME_PLATE,
   chooseRange,
@@ -145,6 +146,15 @@ class Keyboard implements RollSurface<PianoRollOptions> {
       columns: layout.byMidi,
       nodes: this.nodes,
       semitonePx: semitones > 0 ? (layout.whiteWidth * layout.whiteCount) / semitones : 0,
+      // Keys a piano does not have: the falling area over them tinted down to their amber keys,
+      // a dashed line where the 88 keys end — behind the blocks, which fall through it.
+      regions: beyondRuns(layout.keys).map((run) => ({
+        x: run.left,
+        width: run.right - run.left,
+        rgb: '245, 158, 11',
+        edge: run.from > FULL_PIANO.to ? ('left' as const) : ('right' as const),
+        label: 'past the piano',
+      })),
       // A line at every C, a fainter one at F: where an octave's black keys start.
       guides: layout.keys
         .filter((key) => !key.black && (key.midi % 12 === 0 || key.midi % 12 === 5))
@@ -172,17 +182,6 @@ class Keyboard implements RollSurface<PianoRollOptions> {
       }
       elements.push(node);
       nodes.set(key.midi, node);
-    }
-    // Keys a piano does not have, under one mark each stretch.
-    for (const run of beyondRuns(layout.keys)) {
-      const mark = doc.createElement('div');
-      mark.className = 'xpr-beyond';
-      mark.style.left = `${run.left}px`;
-      mark.style.width = `${run.right - run.left}px`;
-      mark.style.height = `${height * 0.3}px`;
-      mark.title = `${noteName(run.from)}–${noteName(run.to)}: past the 88 keys of a piano`;
-      mark.textContent = run.right - run.left >= 40 ? 'past the piano' : '!';
-      elements.push(mark);
     }
     this.keysEl.replaceChildren(...elements);
     this.nodes = nodes;
