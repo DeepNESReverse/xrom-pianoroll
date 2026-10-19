@@ -13,7 +13,7 @@ beforeAll(() => {
       get: (target: Record<string | symbol, unknown>, key) => {
         if (key in target) return target[key];
         if (key === 'clearRect') return () => clears++;
-        if (key === 'createLinearGradient' || key === 'createPattern') return () => gradient;
+        if (key === 'createLinearGradient' || key === 'createRadialGradient' || key === 'createPattern') return () => gradient;
         return noop;
       },
       set: (target, key, value) => {
@@ -112,7 +112,7 @@ describe('PianoRollView', () => {
     const layout = surface.layout(1400, 400, notes, {});
     expect(view.keyboard!.to).toBe(119);
     expect(layout.regions).toEqual([
-      expect.objectContaining({ rgb: '245, 158, 11', edge: 'left', label: 'past the piano' }),
+      expect.objectContaining({ rgb: '245, 158, 11', edge: 'left', label: 'above C8' }),
     ]);
     // Painted on the canvas, not laid over it: no element covers the notes.
     expect(view.element.querySelector('.xpr-beyond')).toBeNull();

@@ -153,7 +153,8 @@ class Keyboard implements RollSurface<PianoRollOptions> {
         width: run.right - run.left,
         rgb: '245, 158, 11',
         edge: run.from > FULL_PIANO.to ? ('left' as const) : ('right' as const),
-        label: 'past the piano',
+        // Where the piano stops, said plainly — "past the piano" named no edge.
+        label: run.from > FULL_PIANO.to ? 'above C8' : 'below A0',
       })),
       // A line at every C, a fainter one at F: where an octave's black keys start.
       guides: layout.keys

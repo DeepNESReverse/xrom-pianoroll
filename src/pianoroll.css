@@ -115,6 +115,21 @@
   box-shadow: 0 0 16px 2px var(--flash, transparent);
 }
 
+/*
+ * A glissando passing over a key: the slide's colour, faint, and no press — the key it struck is
+ * the lit one; these are the keys the sound swept across (`frameOf`'s `glide` in @xromdev/roll).
+ * On at once, and faded over the release when the note ends — a fall of two frames leaves a
+ * streak that can be seen. The colour stays on through the fade (`data-glide='0'`).
+ */
+.xpr-key[data-glide]:not([data-lit='1'])::after {
+  background: var(--glide, transparent);
+}
+.xpr-key[data-glide='1']:not([data-lit='1'])::after {
+  opacity: 0.45;
+  transition-duration: 40ms;
+  box-shadow: 0 0 10px 1px var(--glide, transparent);
+}
+
 /* `keyFlash: false` — the keys still go down, without the colour. */
 [data-key-flash='0'] .xpr-key[data-lit='1']::after {
   opacity: 0;
